@@ -1,37 +1,26 @@
 package com.mits.kakaroto.formregister;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.mits.kakaroto.formregister.model.User;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText etName, etEmail, etAddress, etPhone, etGender, etPassword;
     public static final String TAG = "TagMainActivity";
-    public static final String AUTH_PREFERENCES = "auth_preferences";
-    public static final String NAME = "name";
-    public static final String EMAIL = "email";
-    public static final String ADDRESS = "address";
-    public static final String PHONE = "phone";
-    public static final String GENDER = "gender";
-    public static final String PASSWORD = "password";
-    public static final String ISLOGGEDIN = "isloggedin";
-
-    private SharedPreferences sharedPreferences;
-
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sharedPreferences = getSharedPreferences(AUTH_PREFERENCES, MODE_PRIVATE);
-        boolean isLoggedIn = sharedPreferences.getBoolean(ISLOGGEDIN, false);
-        Log.d("isloggedin", String.valueOf(isLoggedIn));
-        if (isLoggedIn) openDashboard();
+        sessionManager = SessionManager.getInstance();
+        if (sessionManager.isLoggedin()) openDashboard();
         setContentView(R.layout.activity_register);
         Log.d(TAG, "onCreate is called");
 
@@ -44,16 +33,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void submitSave(View view) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(NAME, etName.getText().toString());
-        editor.putString(EMAIL, etEmail.getText().toString());
-        editor.putString(ADDRESS, etAddress.getText().toString());
-        editor.putString(PHONE, etPhone.getText().toString());
-        editor.putString(GENDER, etGender.getText().toString());
-        editor.putString(PASSWORD, etPassword.getText().toString());
-        editor.putBoolean(ISLOGGEDIN, true);
-        editor.apply();
+
+        String name =  etName.getText().toString();
+        String email =  etEmail.getText().toString();
+        String address = etAddress.getText().toString();
+        String phone =  etPhone.getText().toString();
+        String gender =  etGender.getText().toString();
+        String pass =  etPassword.getText().toString();
+
+        sessionManager.setRegister(new User(name,email,address,phone,gender,pass));
         openDashboard();
+
     }
 
     private void openDashboard() {

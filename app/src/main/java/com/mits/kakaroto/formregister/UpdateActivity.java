@@ -1,25 +1,23 @@
 package com.mits.kakaroto.formregister;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.mits.kakaroto.formregister.model.User;
+
 public class UpdateActivity extends AppCompatActivity {
-    private SharedPreferences sharedPreferences;
     private EditText etUpdateName, etUpdateEmail, etUpdateAddress, etUpdatePhone, etUpdateGender, etUpdatePass;
-    private String name, email, address, phone, gender, password;
-    public static final int RESULT_UPDATE=2;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = getSharedPreferences(RegisterActivity.AUTH_PREFERENCES, MODE_PRIVATE);
-
+        sessionManager = SessionManager.getInstance();
         setContentView(R.layout.activity_update);
+
         etUpdateName = (EditText) findViewById(R.id.et_updateName);
         etUpdateEmail = (EditText) findViewById(R.id.et_updateEmail);
         etUpdateAddress = (EditText) findViewById(R.id.et_updateAddress);
@@ -27,43 +25,29 @@ public class UpdateActivity extends AppCompatActivity {
         etUpdateGender = (EditText) findViewById(R.id.et_updateGender);
         etUpdatePass = (EditText) findViewById(R.id.et_updatePassword);
 
-        name = sharedPreferences.getString(RegisterActivity.NAME, "");
-        email = sharedPreferences.getString(RegisterActivity.EMAIL, "");
-        address = sharedPreferences.getString(RegisterActivity.ADDRESS, "");
-        phone = sharedPreferences.getString(RegisterActivity.PHONE, "");
-        gender = sharedPreferences.getString(RegisterActivity.GENDER, "");
-        password = sharedPreferences.getString(RegisterActivity.PASSWORD, "");
+        User user = sessionManager.getUser();
 
-        etUpdateName.setText(name);
-        etUpdateEmail.setText(email);
-        etUpdateAddress.setText(address);
-        etUpdatePhone.setText(phone);
-        etUpdateGender.setText(gender);
-        etUpdatePass.setText(password);
+        etUpdateName.setText(user.getName());
+        etUpdateEmail.setText(user.getEmail());
+        etUpdateAddress.setText(user.getAddress());
+        etUpdatePhone.setText(user.getPhone());
+        etUpdateGender.setText(user.getGender());
+        etUpdatePass.setText(user.getPassword());
 
     }
 
-    public void submitSaveUpdate(View view){
-        String updateName, updateEmail, updateAddress, updatePhone, updateGender, updatePass;
-        updateName = etUpdateName.getText().toString();
-        updateEmail = etUpdateEmail.getText().toString();
-        updateAddress = etUpdateAddress.getText().toString();
-        updatePhone = etUpdatePhone.getText().toString();
-        updateGender = etUpdateGender.getText().toString();
-        updatePass = etUpdatePass.getText().toString();
+    public void submitSaveUpdate(View view) {
+        String updateName = etUpdateName.getText().toString();
+        String updateEmail = etUpdateEmail.getText().toString();
+        String updateAddress = etUpdateAddress.getText().toString();
+        String updatePhone = etUpdatePhone.getText().toString();
+        String updateGender = etUpdateGender.getText().toString();
+        String updatePass = etUpdatePass.getText().toString();
 
-        Intent intent = new Intent();
-        intent.putExtra(RegisterActivity.NAME, updateName);
-        intent.putExtra(RegisterActivity.EMAIL, updateEmail);
-        intent.putExtra(RegisterActivity.ADDRESS, updateAddress);
-        intent.putExtra(RegisterActivity.PHONE, updatePhone);
-        intent.putExtra(RegisterActivity.GENDER, updateGender);
-        intent.putExtra(RegisterActivity.PASSWORD, updatePass);
-        setResult(RESULT_UPDATE, intent);
+        sessionManager.setRegister(new User(updateName, updateEmail, updateAddress, updatePhone,
+                updateGender,updatePass));
         finish();
     }
-
-
 
 
 }
