@@ -33,6 +33,7 @@
         />
 
     <Button
+        android:onClick="submitUpdate"
         android:id="@+id/btn_ubahData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
